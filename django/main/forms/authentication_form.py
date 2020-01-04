@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 class AuthenticationForm(forms.Form):
     email = forms.EmailField()
-    passord = forms.CharField(strip=False, widget=forms.PasswordInput)
+    password = forms.CharField(strip=False, widget=forms.PasswordInput)
 
     def __init__(self, request=None, *args, **kwargs):
         self.request = request

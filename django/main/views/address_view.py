@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
-from main import models
+from main import models, forms
 
 
 class AddressListView(LoginRequiredMixin, ListView):
@@ -43,4 +43,25 @@ class AddressDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return self.model.objects.filter(user=self.request.user)
+
+
+class AddressSelectionView(LoginRequiredMixin, FormView):
+    template_name = "address_select.html"
+    form_class = forms.AddressSelectionForm
+    success_url = reverse_lazy("checkout_done")
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["user"] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        del self.request.session["basket_id"]
+        basket = self.request.basket
+        basket.create_order(
+            form.cleaned_data["billing_address"],
+            form.cleaned_data["shipping_address"],
+        )
+        return super().form_valid(form)
+
 

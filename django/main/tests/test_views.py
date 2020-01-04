@@ -1,3 +1,4 @@
+from decimal import Decimal
 from unittest.mock import patch
 
 from django.test import TestCase
@@ -96,3 +97,59 @@ class TestAddressViews(TestCase):
         self.client.force_login(user1)
         self.client.post(reverse('address_create'), post_data)
         self.assertTrue(models.Address.objects.filter(user=user1).exists())
+
+
+class TestBasketViews(TestCase):
+    def test_add_to_basket_when_loggedin_works(self):
+        user1 = models.User.objects.create_user("u1@bla.com", "supersecure")
+        p1 = models.Product.objects.create(
+            name='P1',
+            slug='p1',
+            price=Decimal('10.00')
+        )
+        p2 = models.Product.objects.create(
+            name='P2',
+            slug='p2',
+            price=Decimal('12.00')
+        )
+        self.client.force_login(user1)
+        response = self.client.get(reverse('add_to_basket'), {'product_id': p1.id})
+        self.assertEquals(response.status_code, 302)
+        response = self.client.get(reverse('add_to_basket'), {'product_id': p1.id})
+        self.assertEquals(response.status_code, 302)
+        response = self.client.get(reverse('add_to_basket'), {'product_id': p2.id})
+        self.assertEquals(response.status_code, 302)
+
+        self.assertTrue(models.Basket.objects.filter(user=user1).exists())
+        self.assertEquals(models.Basket.objects.filter(user=user1)[0].count(), 3)
+
+        self.assertEquals(models.BasketLine.objects.filter(basket__user=user1).count(), 2)
+
+    def test_add_to_basket_login_merge_works(self):
+        user1 = models.User.objects.create_user("u1@bla.com", "supersecure")
+        p1 = models.Product.objects.create(
+            name='P1',
+            slug='p1',
+            price=Decimal('10.00')
+        )
+        p2 = models.Product.objects.create(
+            name='P2',
+            slug='p2',
+            price=Decimal('12.00')
+        )
+        basket = models.Basket.objects.create(user=user1)
+        models.BasketLine.objects.create(
+            basket=basket, product=p1, quantity=2
+        )
+        response = self.client.get(reverse('add_to_basket'), {'product_id': p2.id})
+        self.assertEquals(response.status_code, 302)
+        response = self.client.post(reverse('login'), {
+            'email': "u1@bla.com",
+            'password': "supersecure"
+        })
+        auth_user = auth.get_user(self.client)
+        self.assertTrue(auth_user.is_authenticated)
+        self.assertTrue(models.Basket.objects.filter(user=user1).exists())
+        basket = models.Basket.objects.get(user=user1)
+        self.assertEquals(basket.count(), 3)
+
