@@ -18,6 +18,12 @@ urlpatterns = [
         name="address_select",
     ),
 
+    path(
+        "order/done/",
+        TemplateView.as_view(template_name="order_done.html"),
+        name="checkout_done",
+    ),
+
     path('about-us/',
          TemplateView.as_view(template_name='about-us.html'),
          name='about_us'),

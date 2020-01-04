@@ -19,7 +19,7 @@ def merge_baskets_if_found(sender, user, request, **kwargs):
                 line.save()
             anonymous_basket.delete()
             request.basket = loggedin_basket
-            logger.info('Merged basked for user %s', user.email)
+            logger.info('Merged basket for user %s', user.email)
 
         except Basket.DoesNotExist:
             anonymous_basket.user = user

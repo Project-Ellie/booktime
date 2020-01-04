@@ -63,5 +63,3 @@ class AddressSelectionView(LoginRequiredMixin, FormView):
             form.cleaned_data["shipping_address"],
         )
         return super().form_valid(form)
-
-
