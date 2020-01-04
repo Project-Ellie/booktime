@@ -1,11 +1,14 @@
 from django.db import models
-from main.managers import ActiveManager
-from main.managers import ProductTagManager
+from .generic_managers import ActiveManager
+
+
+class ProductTagManager(models.Manager):
+    def get_by_natural_key(self, slug):
+        return self.get(slug=slug)
 
 
 class ProductTag(models.Model):
 
-    # objects = ActiveManager()
     objects = ProductTagManager()
 
     name = models.CharField(max_length=32)

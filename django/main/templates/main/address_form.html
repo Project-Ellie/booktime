@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Add a new address</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {% include "includes/field.html" with field=form.name %}
+    {% include "includes/field.html" with field=form.address1 %}
+    {% include "includes/field.html" with field=form.address2 %}
+    {% include "includes/field.html" with field=form.zip_code %}
+    {% include "includes/field.html" with field=form.city %}
+    {% include "includes/field.html" with field=form.country %}
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% endblock content %}

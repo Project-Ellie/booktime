@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 3rd-party
+    'widget_tweaks',
+
     # local apps
     'main.apps.MainConfig',
 ]
@@ -84,6 +87,8 @@ DATABASES = {
 }
 
 
+AUTH_USER_MODEL = 'main.User'
+
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -102,6 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_REDIRECT_URL = "/"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/

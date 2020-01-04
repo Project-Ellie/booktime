@@ -9,6 +9,7 @@ verify_ssl = true
 django = ">=2.2.8,<3.0"
 psycopg2-binary = "==2.8.4"
 Pillow = "==7.0.0"
+django-widget-tweaks = "==1.4.5"
 
 [requires]
 python_version = "3.7"
